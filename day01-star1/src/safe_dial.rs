@@ -15,7 +15,7 @@ impl SafeDial {
         let rotated_position = self.position + n_times;
 
         if rotated_position > self.range {
-            self.position = rotated_position % self.range - 1;
+            self.position = rotated_position % (self.range + 1);
         } else {
             self.position = rotated_position;
         }
@@ -25,7 +25,8 @@ impl SafeDial {
         let rotated_position = self.position - n_times;
         
         if rotated_position < 0 {
-            self.position = (self.range + rotated_position % self.range) + 1;
+            let rotated_position = rotated_position % (self.range + 1);
+            self.position = if rotated_position == 0 {0} else {self.range + 1 + rotated_position};
         } else {
             self.position = rotated_position;
         }
@@ -44,8 +45,22 @@ mod tests {
     #[test]
     fn test_left_rotation_cycle() {
         let mut safe_dial = SafeDial::new(10, 0);
-        safe_dial.rotate_left(2);
-        assert_eq!(safe_dial.get_position(), 9);
+        safe_dial.rotate_left(1);
+        assert_eq!(safe_dial.get_position(), 10);
+    }
+
+    #[test]
+    fn test_left_rotation_full_cycle() {
+        let mut safe_dial = SafeDial::new(10, 0);
+        safe_dial.rotate_left(11);
+        assert_eq!(safe_dial.get_position(), 0)
+    }
+
+    #[test]
+    fn test_left_rotation_double_cycle() {
+        let mut safe_dial = SafeDial::new(10, 10);
+        safe_dial.rotate_left(33);
+        assert_eq!(safe_dial.get_position(), 10);
     }
 
     #[test]
@@ -58,8 +73,15 @@ mod tests {
     #[test]
     fn test_right_rotation_cycle() {
         let mut safe_dial = SafeDial::new(10, 0);
-        safe_dial.rotate_right(12);
-        assert_eq!(safe_dial.get_position(), 1);
+        safe_dial.rotate_right(11);
+        assert_eq!(safe_dial.get_position(), 0);
+    }
+
+    #[test]
+    fn test_right_rotation_double_cycle() {
+        let mut safe_dial = SafeDial::new(10, 0);
+        safe_dial.rotate_right(33);
+        assert_eq!(safe_dial.get_position(), 0);
     }
 
     #[test]

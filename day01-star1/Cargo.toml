@@ -1,0 +1,6 @@
+[package]
+name = "day01-star1"
+edition.workspace = true
+version.workspace = true
+
+[dependencies]

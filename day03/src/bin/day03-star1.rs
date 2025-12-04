@@ -1,14 +1,6 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::error::Error;
-
-fn read_battery_banks(filepath: &Path) -> Vec<Vec<usize>> {
-    let file = File::open(filepath).unwrap();
-    let reader = BufReader::new(file);
-
-    reader.lines().map(|s| s.unwrap().chars().map(|c| c.to_digit(10).unwrap() as usize).collect()).collect()
-}
+use day03::*;
 
 fn find_biggest_joltage(battery_bank: &Vec<usize>) -> usize{
     let mut max_first_idx: usize = 0;

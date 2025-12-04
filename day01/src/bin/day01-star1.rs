@@ -1,11 +1,13 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 use day01::*;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut safe_dial = 50;
-    let file = File::open("day01\\input.txt")?;
+    let filepath = Path::new("day01/input.txt");
+    let file = File::open(filepath)?;
     let reader = BufReader::new(file);
 
     let mut count_safe_dial_zero_position = 0;

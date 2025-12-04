@@ -1,5 +1,5 @@
 use std::error::Error;
-use itertools::Itertools;
+use day02::*;
 
 fn invalid_ids_in_range(min: usize, max: usize) -> Vec<usize> {
     let mut invalid_ids = Vec::new();
@@ -17,29 +17,23 @@ fn is_doubled_sequence(number: usize) -> bool {
     let number = number.to_string();
     let length = number.len();
 
-    if length % 2 != 0 {
-        return false;
-    }
+    for i in 1..length / 2 + 1 {
+        if length % i != 0 { continue };
+        let window = &number[..i];
+        let mut found_sequence = true;
 
-    let middle = length / 2;
-
-    number[..middle] == number[middle..]
-}
-
-fn read_ranges_from_file(filepath: &std::path::Path) -> Vec<(usize, usize)> {
-    let input = std::fs::read_to_string(filepath).unwrap();
-    let mut ranges: Vec<(usize, usize)> = Vec::new();
-
-    for range in input.split(",") {
-        if range.is_empty() {
-            continue;
+        for j in (0..length).step_by(i) { 
+            let step_window = &number[j..j+i];
+            if window != step_window {
+                found_sequence = false;
+                break;
+            }
         }
 
-        let range: (usize, usize) = range.split("-").map(|x| x.parse().unwrap()).collect_tuple().unwrap();
-        ranges.push(range);
+        if found_sequence { return true }
     }
 
-    ranges
+    return false;
 }
 
 fn main() -> Result<(), Box<dyn Error>>{
@@ -65,13 +59,13 @@ mod tests {
     #[test]
     fn double_sequence_detected() {
         assert!(is_doubled_sequence(11));
-        assert!(is_doubled_sequence(5050));
+        assert!(is_doubled_sequence(505050));
         assert!(is_doubled_sequence(123123));
     }
 
     #[test]
-    fn double_sequence_not_detected_in_odd_length_number() {
-        assert!(!is_doubled_sequence(1));
-        assert!(!is_doubled_sequence(111));
+    fn double_sequence_detected_in_odd_length_number() {
+        assert!(is_doubled_sequence(131131131));
+        assert!(is_doubled_sequence(111));
     }
 }

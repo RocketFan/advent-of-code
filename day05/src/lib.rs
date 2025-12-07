@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::ops::Range;
 use std::path::Path;
 use itertools::Itertools;
 
@@ -9,7 +10,7 @@ pub enum ReadPhase {
     AvailableIngredients
 }
 
-pub fn read_available_ingredients_with_fresh_ranges(filepath: &Path) -> (Vec<usize>, Vec<(usize, usize)>) {
+pub fn read_available_ingredients_with_fresh_ranges(filepath: &Path) -> (Vec<usize>, Vec<Range<usize>>) {
     let file = File::open(filepath).unwrap();
     let reader = BufReader::new(file);
     let mut fresh_ranges = Vec::new();
@@ -27,6 +28,7 @@ pub fn read_available_ingredients_with_fresh_ranges(filepath: &Path) -> (Vec<usi
                 if range.0 > range.1 {
                     panic!("Range max {} lower than range min {}", range.1, range.0)
                 }
+                let range = range.0..range.1 + 1;
                 fresh_ranges.push(range);
             },
             ReadPhase::BlankLine => read_phase = ReadPhase::AvailableIngredients,
